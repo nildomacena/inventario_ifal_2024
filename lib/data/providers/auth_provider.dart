@@ -5,17 +5,6 @@ class AuthProvider {
   final supabase = Supabase.instance.client;
   Usuario? usuario;
 
-  AuthProvider() {
-    supabase.auth.onAuthStateChange.listen((event) {
-      if (event.session?.user != null) {
-        getUsuario(event.session!.user.id).then((value) {
-          usuario = value;
-        });
-      } else {
-        usuario = null;
-      }
-    });
-  }
   Future<Usuario?> login(String username, String password) async {
     try {
       final response = await supabase.auth.signInWithPassword(
@@ -26,11 +15,26 @@ class AuthProvider {
       if (response.user == null) {
         return null;
       }
-
+      listenAuthState();
       return getUsuario(response.user!.id);
     } catch (e) {
       rethrow;
     }
+  }
+
+  listenAuthState() {
+    supabase.auth.onAuthStateChange.listen((event) {
+      if (event.session?.user != null) {
+        getUsuario(event.session!.user.id).then((value) {
+          usuario = value;
+        });
+      } else {
+        usuario = null;
+      }
+    }, onError: (e) {
+      usuario = null;
+      supabase.auth.signOut();
+    });
   }
 
   Future<Usuario?> getUsuario(String id) async {
@@ -69,7 +73,9 @@ class AuthProvider {
         'cpf': cpf,
         'siape': siape,
         'email': email,
-      });
+      }).single();
+
+      listenAuthState();
 
       return response.user;
     } catch (e) {

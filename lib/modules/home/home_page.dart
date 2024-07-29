@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:inventario_ifal/modules/home/home_controller.dart';
 
@@ -20,12 +21,66 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: const Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Home Page',
+          children: [
+            // filtro de localidades
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                  controller: controller.searchController,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        controller.searchController.clear();
+                        controller.filterLocalidades('');
+                      },
+                      child: const Icon(Icons.clear),
+                    ),
+                    labelText: 'Filtrar localidades',
+                    border: const OutlineInputBorder(),
+                  ),
+                  onChanged: controller.filterLocalidades),
+            ),
+            GetBuilder<HomeController>(
+              builder: (_) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: controller.localidadesFiltradas.length,
+                  itemBuilder: (context, index) {
+                    //Coloque bordas uma fonte maior e negrita
+                    return Container(
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      child: ListTile(
+                        onTap: () {
+                          print(controller.localidadesFiltradas[index].nome);
+                        },
+                        title: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: Text(
+                            controller.localidadesFiltradas[index].nome,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ],
         ),

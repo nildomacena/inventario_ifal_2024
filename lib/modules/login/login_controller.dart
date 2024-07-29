@@ -20,6 +20,8 @@ class LoginController extends GetxController {
   final GlobalKey<FormState> formSignUpKey = GlobalKey<FormState>();
 
   bool lembrarCredenciais = false;
+  bool showPassword = false;
+  bool showConfirmPassword = false;
 
   LoginController({required this.authRepository});
 
@@ -30,6 +32,16 @@ class LoginController extends GetxController {
 
   onSignUpClick() {
     Get.to(() => SignupPage());
+  }
+
+  toggleShowPassword() {
+    showPassword = !showPassword;
+    update();
+  }
+
+  toggleShowConfirmPassword() {
+    showConfirmPassword = !showConfirmPassword;
+    update();
   }
 
   login() async {
