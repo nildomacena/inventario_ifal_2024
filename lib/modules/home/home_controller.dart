@@ -32,12 +32,16 @@ class HomeController extends GetxController {
     }
   }
 
-  void filterLocalidades(String query) {
+  void filtraLocalidades(String query) {
     localidadesFiltradas = localidades
         .where((element) =>
             element.nome.toLowerCase().contains(query.toLowerCase()))
         .toList();
     update();
+  }
+
+  irParaLocalidade(Localidade localidade) {
+    Get.toNamed(Routes.localidade, arguments: localidade);
   }
 
   @override
