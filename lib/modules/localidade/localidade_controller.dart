@@ -22,6 +22,10 @@ class LocalidadeController extends GetxController {
     update();
   }
 
+  onAdicionarBem() {
+    Get.toNamed(Routes.bem, arguments: {'localidade': localidade});
+  }
+
   void signOut() {
     authRepository.signOut();
     Get.offAllNamed(Routes.login);

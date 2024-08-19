@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventario_ifal/modules/localidade/localidade_controller.dart';
+import 'package:inventario_ifal/routes/app_routes.dart';
 
 class LocalidadePage extends StatelessWidget {
   final LocalidadeController controller = Get.find();
@@ -75,6 +76,11 @@ class LocalidadePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: controller.onAdicionarBem,
+        label: const Text('Cadastrar Bem'),
+        icon: const Icon(Icons.add),
+      ),
       appBar: AppBar(
         title: Text(controller.localidade.nome),
         actions: <Widget>[
