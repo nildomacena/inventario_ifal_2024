@@ -27,6 +27,10 @@ class UtilService {
         .first['Denominação'];
   }
 
+  static String getFileName(String path) {
+    return path.split('/').last;
+  }
+
   static void snackBarErro(
       {String? titulo,
       String? mensagem,

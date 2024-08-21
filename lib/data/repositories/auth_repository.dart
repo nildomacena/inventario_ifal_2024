@@ -7,6 +7,8 @@ class AuthRepository {
 
   AuthRepository({required this.authProvider});
 
+  Usuario? get usuario => authProvider.usuario;
+
   Future<Usuario?> login({
     required String email,
     required String password,

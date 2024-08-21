@@ -10,7 +10,6 @@ import 'package:inventario_ifal/shared/utils.dart';
 class BemController extends GetxController {
   final BemRepository repository;
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
   late Localidade localidade;
 
   File? image;
@@ -202,6 +201,7 @@ class BemController extends GetxController {
       await repository.createBem(
           image: image!,
           localidadeId: localidade.localidadeId,
+          inventarioLocalidadeId: localidade.inventarioId,
           patrimonio: patrimonioController.text,
           descricao: descricaoController.text,
           numeroSerie: numeroSerieController.text,

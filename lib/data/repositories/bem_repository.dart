@@ -1,13 +1,29 @@
 import 'dart:io';
 
+import 'package:get/get.dart';
+import 'package:inventario_ifal/data/models/bem.dart';
+import 'package:inventario_ifal/data/models/usuario.dart';
+import 'package:inventario_ifal/data/providers/auth_provider.dart';
+import 'package:inventario_ifal/shared/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class BemRepository {
   SupabaseClient client = Supabase.instance.client;
+  AuthProvider authProvider = Get.find();
+
+  Future<dynamic> getBensByLocalidadeInventarioId(int localidadeId) async {
+    final response =
+        await client.from('bens').select().eq('inventario_id', localidadeId);
+    if (response.isEmpty) {
+      return [];
+    }
+    return response.map((e) => Bem.fromMap(e)).toList();
+  }
 
   Future<void> createBem({
     required File image,
     required int localidadeId,
+    required int inventarioLocalidadeId,
     required String patrimonio,
     required String numeroSerie,
     required String descricao,
@@ -19,11 +35,22 @@ class BemRepository {
   }) async {
     String name =
         '${DateTime.now().microsecondsSinceEpoch} + ${image.path.split('/').last}';
-    String url =
-        await client.storage.from('inventario').upload('patrimonio', image);
+    String path = patrimonio.isNotEmpty
+        ? '$patrimonio/${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}'
+        : '${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}';
 
-    await client.from('bens').upsert({
+    String pathSupabase =
+        await client.storage.from('inventario').upload(path, image);
+    String url = client.storage.from('inventario').getPublicUrl(path);
+    Usuario? usuario = authProvider.usuario;
+    if (usuario == null) {
+      UtilService.snackBarErro(mensagem: 'Usuário não encontrado');
+      return;
+    }
+    await client.from('bens').insert({
+      'usuario_id': usuario.id,
       'localidade_id': localidadeId,
+      'inventario_id': inventarioLocalidadeId,
       'patrimonio': patrimonio,
       'numero_serie': numeroSerie,
       'descricao': descricao,
@@ -33,7 +60,7 @@ class BemRepository {
       'observacoes': observacoes,
       'sem_etiqueta': semEtiqueta,
       'imagem': url,
-    }).single();
+    }).select();
   }
 
   Future<void> updateBem({
@@ -51,7 +78,8 @@ class BemRepository {
   }) async {
     String name =
         '${DateTime.now().microsecondsSinceEpoch} + ${image.path.split('/').last}';
-    String url = await client.storage.from('bens').upload(name, image);
+    print('file name: $name');
+    String url = await client.storage.from('inventario').upload(name, image);
 
     await client
         .from('bens')

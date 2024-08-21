@@ -73,6 +73,68 @@ class LocalidadePage extends StatelessWidget {
     );
   }
 
+  Widget buildCardBem() {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      child: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 2),
+            child: const Text(
+              'Bens',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          controller.loading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: controller.bens.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: InkWell(
+                          onTap: () {
+                            Get.toNamed(Routes.bem, arguments: {
+                              'localidade': controller.localidade,
+                              'bem': controller.bens[index],
+                            });
+                          },
+                          child: Column(
+                            children: [
+                              Text(
+                                ' ${controller.bens[index].patrimonio != null && controller.bens[index].patrimonio!.isNotEmpty ? controller.bens[index].patrimonio : 'Sem patrimônio'}',
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                controller.bens[index].descricao,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ],
+                          )),
+                    );
+                  },
+                ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,6 +158,7 @@ class LocalidadePage extends StatelessWidget {
         child: Column(
           children: [
             buildCardInfo(),
+            buildCardBem(),
           ],
         ),
       ),

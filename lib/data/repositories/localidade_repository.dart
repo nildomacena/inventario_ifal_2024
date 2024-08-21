@@ -17,17 +17,15 @@ class LocalidadeRepository {
     }
   }
 
-  Future<dynamic> buscaDetalhesLocalidade(int id) async {
+  Future<Localidade> buscaDetalhesLocalidade(int id) async {
     try {
-      //busca a na view inventario_por_localidade os dados
-      // final response = await await supabase
-      //     .rpc('detalhes_localidade', params: {'localidade_id_input': id});
       final response = await supabase
-          .from('Vw_InventarioDetalhado2')
+          .from('view_inventario_localidade')
           .select()
-          .eq('localidade_id', id);
+          .eq('localidade_id', id)
+          .single();
 
-      print(response);
+      return Localidade.fromJson(response);
     } catch (e) {
       rethrow;
     }

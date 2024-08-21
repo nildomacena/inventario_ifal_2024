@@ -8,11 +8,11 @@ class Bem {
   final bool bemParticular;
   final bool indicaDesfazimento;
   final String? observacoes;
-  final String localidadeId;
-  final String campusId;
+  final int localidadeId;
+  final String? campusId;
   final String imagem;
   final String nomeUsuario;
-  final String uidUsuario;
+  final int idUsuario;
   final DateTime dataCadastro;
   final bool aCorrigir;
   Bem(
@@ -29,7 +29,7 @@ class Bem {
       required this.campusId,
       required this.localidadeId,
       required this.nomeUsuario,
-      required this.uidUsuario,
+      required this.idUsuario,
       required this.dataCadastro,
       required this.aCorrigir});
 
@@ -50,20 +50,20 @@ class Bem {
         id: data['id'],
         descricao: data['descricao'],
         patrimonio: data['patrimonio'],
-        bemParticular: data['bemParticular'] ?? false, //Testes
-        estadoBem: data['estadoBem'] ?? 'uso',
-        indicaDesfazimento: data['indicaDesfazimento'] ?? false, //Testes
-        numeroSerie: data['numeroSerie'],
+        bemParticular: data['bem_particular'] ?? false, //Testes
+        estadoBem: data['estado_bem'] ?? 'uso',
+        indicaDesfazimento: data['indica_desfaziamento'] ?? false, //Testes
+        numeroSerie: data['numero_serie'],
         observacoes: data['observacoes'],
-        semEtiqueta: data['semEtiqueta'] ?? false, //testes,
+        semEtiqueta: data['sem_etiqueta'] ?? false, //testes,
         imagem: data['imagem'],
         campusId: data['campusId'],
-        localidadeId: data['localidadeId'],
-        dataCadastro: data['timestamp'] != null
-            ? data['timestamp'].toDate()
+        localidadeId: data['localidade_id'],
+        dataCadastro: data['created_at'] != null
+            ? DateTime.parse(data['created_at'])
             : DateTime.now(), //Colocado para testes
-        nomeUsuario: data['nomeUsuario'] ?? "Usuario teste",
-        uidUsuario: data['uidUsuario'] ?? 'uidteste',
+        nomeUsuario: data['usuario_id']?.toString() ?? "Usuario teste",
+        idUsuario: data['usuario_id'] ?? 'uidteste',
         aCorrigir: data['aCorrigir'] ?? false);
   }
 
