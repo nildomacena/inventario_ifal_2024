@@ -234,7 +234,7 @@ class BemController extends GetxController {
       update();
       await repository.updateBem(
           id: bem!.id,
-          image: image!,
+          image: image,
           localidadeId: localidade.localidadeId,
           patrimonio: patrimonioController.text,
           descricao: descricaoController.text,
@@ -269,6 +269,7 @@ class BemController extends GetxController {
     particular = false;
     semEtiqueta = false;
     desfazimento = false;
+    bem = null;
     update();
   }
 

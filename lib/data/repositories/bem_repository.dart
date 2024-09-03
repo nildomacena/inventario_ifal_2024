@@ -40,7 +40,11 @@ class BemRepository {
         : '${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}';
 
     String pathSupabase =
-        await client.storage.from('inventario').upload(path, image);
+        await client.storage.from('inventario').upload(path, image,
+            fileOptions: FileOptions(
+              cacheControl: '3600',
+              upsert: true,
+            ));
     String url = client.storage.from('inventario').getPublicUrl(path);
     Usuario? usuario = authProvider.usuario;
     if (usuario == null) {
@@ -65,7 +69,7 @@ class BemRepository {
 
   Future<void> updateBem({
     required int id,
-    required File image,
+    required File? image,
     required int localidadeId,
     required String patrimonio,
     required String numeroSerie,
@@ -76,27 +80,55 @@ class BemRepository {
     required String observacoes,
     required bool semEtiqueta,
   }) async {
-    String name =
-        '${DateTime.now().microsecondsSinceEpoch} + ${image.path.split('/').last}';
-    print('file name: $name');
-    String url = await client.storage.from('inventario').upload(name, image);
+    String? name;
+    String? url;
+    if (image != null) {
+      name =
+          '${DateTime.now().microsecondsSinceEpoch} + ${image.path.split('/').last}';
+      String path = patrimonio.isNotEmpty
+          ? '$patrimonio/${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}'
+          : '${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}';
 
-    await client
-        .from('bens')
-        .update({
-          'localidade_id': localidadeId,
-          'patrimonio': patrimonio,
-          'numero_serie': numeroSerie,
-          'descricao': descricao,
-          'estado_bem': estadoBem,
-          'bem_particular': bemParticular,
-          'indica_desfazimento': indicaDesfazimento,
-          'observacoes': observacoes,
-          'sem_etiqueta': semEtiqueta,
-          'imagem': url,
-        })
-        .eq('id', id)
-        .single();
+      await client.storage.from('inventario').upload(path, image,
+          fileOptions: const FileOptions(
+            cacheControl: '3600',
+            upsert: true,
+          ));
+      url = client.storage.from('inventario').getPublicUrl(path);
+
+      await client
+          .from('bens')
+          .update({
+            'localidade_id': localidadeId,
+            'patrimonio': patrimonio,
+            'numero_serie': numeroSerie,
+            'descricao': descricao,
+            'estado_bem': estadoBem,
+            'bem_particular': bemParticular,
+            'indica_desfazimento': indicaDesfazimento,
+            'observacoes': observacoes,
+            'sem_etiqueta': semEtiqueta,
+            'imagem': url,
+          })
+          .eq('id', id)
+          .select();
+    } else {
+      await client
+          .from('bens')
+          .update({
+            'localidade_id': localidadeId,
+            'patrimonio': patrimonio,
+            'numero_serie': numeroSerie,
+            'descricao': descricao,
+            'estado_bem': estadoBem,
+            'bem_particular': bemParticular,
+            'indica_desfazimento': indicaDesfazimento,
+            'observacoes': observacoes,
+            'sem_etiqueta': semEtiqueta,
+          })
+          .eq('id', id)
+          .select();
+    }
   }
 
   Future<void> excluirBem(int id) async {
