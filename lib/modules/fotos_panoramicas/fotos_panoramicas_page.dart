@@ -52,7 +52,7 @@ class PanoramicasPage extends StatelessWidget {
                           return GestureDetector(
                             onTap: () {
                               Get.to(() =>
-                                  ViewImage(controller.panoramicas[index]));
+                                  ViewImage(controller.panoramicas[index].url));
                             },
                             child: Stack(
                               fit: StackFit.expand,
@@ -127,7 +127,7 @@ class PanoramicasPage extends StatelessWidget {
                                           },
                                           style: IconButton.styleFrom(
                                               backgroundColor: Colors.white),
-                                          icon: Icon(Icons.delete)),
+                                          icon: const Icon(Icons.delete)),
                                     ))
                               ],
                             ),
@@ -159,27 +159,32 @@ class PanoramicasPage extends StatelessWidget {
                     return Container();
                   }), */
                   if (_.imagens.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 30),
-                      height: 50,
-                      child: ElevatedButton.icon(
-                          onPressed: _.imagem == null || _.salvando
-                              ? null
-                              : _.saveImage,
-                          icon: const Icon(Icons.save),
-                          label: Text(
-                            _.salvando
-                                ? 'Salvando...'
-                                : _.panoramicas.isNotEmpty && _.imagem != null
-                                    ? 'Atualizar panorâmica'
-                                    : _.imagem != null
-                                        ? _.imagens.length > 1
-                                            ? 'Salvar imagens'
-                                            : 'Salvar Imagem'
-                                        : 'Selecione uma imagem',
-                            style: const TextStyle(fontSize: 15),
-                          )),
+                    GetBuilder<PanoramicasController>(
+                      builder: (_) {
+                        return Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 30),
+                          height: 50,
+                          child: ElevatedButton.icon(
+                              onPressed: _.imagem == null || _.salvando
+                                  ? null
+                                  : _.saveImage,
+                              icon: const Icon(Icons.save),
+                              label: Text(
+                                _.salvando
+                                    ? 'Salvando...'
+                                    : _.panoramicas.isNotEmpty &&
+                                            _.imagem != null
+                                        ? 'Atualizar panorâmica'
+                                        : _.imagem != null
+                                            ? _.imagens.length > 1
+                                                ? 'Salvar imagens'
+                                                : 'Salvar Imagem'
+                                            : 'Selecione uma imagem',
+                                style: const TextStyle(fontSize: 15),
+                              )),
+                        );
+                      },
                     )
                 ],
               ),

@@ -33,18 +33,15 @@ class BemRepository {
     required String observacoes,
     required bool semEtiqueta,
   }) async {
-    String name =
-        '${DateTime.now().microsecondsSinceEpoch} + ${image.path.split('/').last}';
     String path = patrimonio.isNotEmpty
         ? '$patrimonio/${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}'
         : '${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}';
 
-    String pathSupabase =
-        await client.storage.from('inventario').upload(path, image,
-            fileOptions: FileOptions(
-              cacheControl: '3600',
-              upsert: true,
-            ));
+    await client.storage.from('inventario').upload(path, image,
+        fileOptions: const FileOptions(
+          cacheControl: '3600',
+          upsert: true,
+        ));
     String url = client.storage.from('inventario').getPublicUrl(path);
     Usuario? usuario = authProvider.usuario;
     if (usuario == null) {

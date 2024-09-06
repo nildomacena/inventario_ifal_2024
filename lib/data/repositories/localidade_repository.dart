@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:inventario_ifal/data/models/localidade.dart';
 import 'package:inventario_ifal/data/models/panoramica.dart';
+import 'package:inventario_ifal/shared/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LocalidadeRepository {
@@ -37,22 +38,24 @@ class LocalidadeRepository {
   Future<Localidade> salvarPanoramicas(
       {required List<File> imagens, required Localidade localidade}) async {
     try {
-      List<Future> futures = [];
-      imagens.forEach((imagem) async {
-        String name =
-            '${DateTime.now().microsecondsSinceEpoch} + ${imagem.path.split('/').last}';
+      List<Future> futures = imagens.map((imagem) async {
         String path =
-            '${localidade.localidadeId.toString()}/panoramicas/${DateTime.now().microsecondsSinceEpoch}-${imagem.path.split('/').last}';
-        String url = await supabase.storage.from('inventario').upload(
-            path, imagem,
-            fileOptions: FileOptions(cacheControl: '3600', upsert: true));
-        futures.add(supabase.from('panoramicas').insert({
+            '${localidade.localidadeId}/${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(imagem.path)}';
+
+        await supabase.storage.from('inventario').upload(path, imagem,
+            fileOptions: const FileOptions(
+              cacheControl: '3600',
+              upsert: true,
+            ));
+        String url = supabase.storage.from('inventario').getPublicUrl(path);
+
+        await supabase.from('fotos_panoramicas').insert({
           'inventario_id': localidade.inventarioId,
           'path_file': path,
           'url': url,
-        }));
-      });
-      await Future.wait(futures);
+        }).select();
+      }).toList();
+      var result = await Future.wait(futures);
       return localidade;
     } catch (e) {
       rethrow;
@@ -66,6 +69,21 @@ class LocalidadeRepository {
           .delete()
           .eq('inventario_id', panoramica.inventarioId)
           .select();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<Panoramica>> getPanoramicas(int inventarioId) async {
+    try {
+      final response = await supabase
+          .from('fotos_panoramicas')
+          .select()
+          .eq('inventario_id', inventarioId);
+      if (response.isEmpty) {
+        return [];
+      }
+      return response.map((e) => Panoramica.fromJson(e)).toList();
     } catch (e) {
       rethrow;
     }

@@ -21,6 +21,16 @@ class PanoramicasController extends GetxController {
       UtilService.snackBarErro(mensagem: 'Localidade nao encontrada');
     }
     localidade = Get.arguments['localidade'];
+    getPanoramicas();
+  }
+
+  getPanoramicas() async {
+    try {
+      panoramicas = await repository.getPanoramicas(localidade.inventarioId);
+      update();
+    } catch (e) {
+      print('erro ao buscar imagens panoramicas');
+    }
   }
 
   getImage() async {

@@ -20,7 +20,7 @@ class LocalidadePage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.symmetric(vertical: 2),
+            margin: const EdgeInsets.symmetric(vertical: 2),
             child: Text(
               'Nome: ${controller.localidade.nome}',
               style: const TextStyle(
@@ -30,7 +30,7 @@ class LocalidadePage extends StatelessWidget {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(vertical: 2),
+            margin: const EdgeInsets.symmetric(vertical: 2),
             child: Text(
               'Número de bens: ${controller.localidade.numeroBens ?? 'Carregando...'}',
               style: const TextStyle(
@@ -41,7 +41,7 @@ class LocalidadePage extends StatelessWidget {
           ),
           //status
           Container(
-            margin: EdgeInsets.symmetric(vertical: 2),
+            margin: const EdgeInsets.symmetric(vertical: 2),
             child: Text(
               'Status: ${controller.localidade.statusFormatado}',
               style: const TextStyle(
@@ -50,16 +50,16 @@ class LocalidadePage extends StatelessWidget {
               ),
             ),
           ),
-          Divider(),
+          const Divider(),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               OutlinedButton(
-                onPressed: () {},
+                onPressed: controller.goToPanoramicas,
                 child: const Text('Fotos Panorâmicas'),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               OutlinedButton(

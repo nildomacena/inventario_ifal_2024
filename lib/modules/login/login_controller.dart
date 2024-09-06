@@ -53,7 +53,6 @@ class LoginController extends GetxController {
           email: email,
           password: password,
         );
-        Get.snackbar('Sucesso', 'Login efetuado com sucesso');
         Get.offAllNamed(Routes.home);
       } catch (e) {
         Get.snackbar('Erro', e.toString());

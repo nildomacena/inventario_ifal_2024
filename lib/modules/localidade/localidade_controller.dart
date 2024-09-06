@@ -31,9 +31,15 @@ class LocalidadeController extends GetxController {
     update();
   }
 
-  goToBem(Bem bem) async{
-    await Get.toNamed(Routes.bem, arguments: {'bem': bem, 'localidade': localidade});
+  goToBem(Bem bem) async {
+    await Get.toNamed(Routes.bem,
+        arguments: {'bem': bem, 'localidade': localidade});
     getBens();
+  }
+
+  goToPanoramicas() async {
+    await Get.toNamed(Routes.panoramicas,
+        arguments: {'localidade': localidade});
   }
 
   buscaDetalhesLocalidade() async {
