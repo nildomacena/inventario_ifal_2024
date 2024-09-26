@@ -88,4 +88,38 @@ class LocalidadeRepository {
       rethrow;
     }
   }
+
+  finalizarLocalidade({
+    required int localidadeId,
+    required int usuarioId,
+    required File imagem,
+    required String observacao,
+  }) async {
+    try {
+      String path =
+          '$localidadeId/relatorio-${UtilService.getFileName(imagem.path)}';
+
+      await supabase.storage.from('inventario').upload(path, imagem,
+          fileOptions: const FileOptions(
+            cacheControl: '3600',
+            upsert: true,
+          ));
+      String url = supabase.storage.from('inventario').getPublicUrl(path);
+      String date = DateTime.now().toIso8601String();
+
+      await supabase
+          .from('inventario_localidade')
+          .update({
+            'observacao': observacao,
+            'relatorio_path': path,
+            'relatorio': url,
+            'status': 'finalizada',
+            'usuario_id': usuarioId,
+          })
+          .eq('localidade_id', localidadeId)
+          .select();
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

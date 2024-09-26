@@ -4,4 +4,5 @@ class Routes {
   static const localidade = '/localidade';
   static const bem = '/bem';
   static const panoramicas = '/panoramicas';
+  static const finalizarLocalidade = '/finalizarLocalidade';
 }

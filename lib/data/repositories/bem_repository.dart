@@ -11,11 +11,11 @@ class BemRepository {
   SupabaseClient client = Supabase.instance.client;
   AuthProvider authProvider = Get.find();
 
-  Future<dynamic> getBensByLocalidadeInventarioId(int localidadeId) async {
+  Future<List<Bem>> getBensByLocalidadeInventarioId(int localidadeId) async {
     final response =
         await client.from('bens').select().eq('inventario_id', localidadeId);
     if (response.isEmpty) {
-      return [];
+      return <Bem>[];
     }
     return response.map((e) => Bem.fromMap(e)).toList();
   }

@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:inventario_ifal/modules/bem/bem_binding.dart';
 import 'package:inventario_ifal/modules/bem/bem_page.dart';
+import 'package:inventario_ifal/modules/finalizar_localidade/finalizar_localidade_binding.dart';
+import 'package:inventario_ifal/modules/finalizar_localidade/finalizar_localidade_page.dart';
 import 'package:inventario_ifal/modules/fotos_panoramicas/fotos_panoramicas_binding.dart';
 import 'package:inventario_ifal/modules/fotos_panoramicas/fotos_panoramicas_page.dart';
 import 'package:inventario_ifal/modules/home/home_binding.dart';
@@ -37,6 +39,11 @@ class AppPages {
       name: Routes.panoramicas,
       page: () => PanoramicasPage(),
       binding: PanoramicasBinding(),
+    ),
+    GetPage(
+      name: Routes.finalizarLocalidade,
+      page: () => FinalizarLocalidadePage(),
+      binding: FinalizarLocalidadeBinding(),
     ),
   ];
 }

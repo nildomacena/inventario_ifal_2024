@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventario_ifal/modules/localidade/localidade_controller.dart';
-import 'package:inventario_ifal/routes/app_routes.dart';
 
 class LocalidadePage extends StatelessWidget {
   final LocalidadeController controller = Get.find();
@@ -63,7 +62,7 @@ class LocalidadePage extends StatelessWidget {
                 width: 10,
               ),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: controller.goToFinalizarLocalidade,
                 child: const Text('Finalizar Localidade'),
               ),
             ],
