@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventario_ifal/data/models/bem.dart';
+import 'package:inventario_ifal/data/models/descricao_bem.dart';
 import 'package:inventario_ifal/data/models/localidade.dart';
 import 'package:inventario_ifal/data/repositories/bem_repository.dart';
 import 'package:inventario_ifal/shared/utils.dart';
@@ -18,8 +19,7 @@ class BemController extends GetxController {
   bool semEtiqueta = false;
   bool desfazimento = false;
   bool salvando = false;
-  bool alterar =
-      false; //Variável que verifica se a tela é para alterar algum bem já existente ou cadastrar um novo
+  bool alterar = false;
   String radioEstado = '';
 
   TextEditingController patrimonioController = TextEditingController();
@@ -69,11 +69,44 @@ class BemController extends GetxController {
     onPatrimonioComplete();
   }
 
-  onPatrimonioComplete() {
+  onPatrimonioComplete() async {
     print('onPatrimonioComplete');
-    descricaoController.text =
-        utilService.buscarDescricao(patrimonioController.text) ?? '';
 
+    try {
+      DescricaoBem? descricaoBem =
+          await repository.getDescricaoBem(patrimonioController.text);
+      if (descricaoBem == null) {
+        Get.dialog(AlertDialog(
+          title: const Text('Bem não encontrado'),
+          content: const Text('Bem não encontrado'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text('OK'),
+            )
+          ],
+        ));
+        return;
+      }
+      descricaoController.text = descricaoBem.especificacao;
+      print('descricaoBem: $descricaoBem');
+    } catch (e) {
+      print('Erro ao buscar descrição do bem: $e');
+      Get.dialog(AlertDialog(
+        title: const Text('Erro ao buscar descrição do bem'),
+        content: Text('Erro ao buscar descrição do bem: $e'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('OK'),
+          )
+        ],
+      ));
+    }
     /*  descricaoController.text =
         utilService.getDescricaoPorTombamento(patrimonioController.text); */
     /* Localidade localidade = await fireService

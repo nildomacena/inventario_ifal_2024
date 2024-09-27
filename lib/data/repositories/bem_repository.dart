@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:inventario_ifal/data/models/bem.dart';
+import 'package:inventario_ifal/data/models/descricao_bem.dart';
 import 'package:inventario_ifal/data/models/usuario.dart';
 import 'package:inventario_ifal/data/providers/auth_provider.dart';
 import 'package:inventario_ifal/shared/utils.dart';
@@ -130,5 +132,30 @@ class BemRepository {
 
   Future<void> excluirBem(int id) async {
     await client.from('bens').delete().eq('id', id).single();
+  }
+
+  Future<DescricaoBem?> getDescricaoBem(String numTombamento) async {
+    print('getDescricaoBem');
+    String apiToken =
+        'a9068ec00f579ad12b293bb9334c574dd0dfbf883f74e3e5f942fc5f46ea74ce';
+    String url =
+        'https://apisig.ifal.edu.br/v3/patrimonio/bens?inicio=0&quantidade=50&num_tombamento=$numTombamento';
+
+    Dio dio = Dio();
+    var response = await dio.get(
+      url,
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $apiToken',
+        },
+      ),
+    );
+
+    if (response.statusCode != null &&
+        response.statusCode! >= 200 &&
+        response.statusCode! < 300) {
+      return DescricaoBem.fromJson(response.data[0]);
+    }
+    return null;
   }
 }
