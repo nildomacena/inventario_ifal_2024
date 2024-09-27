@@ -74,6 +74,19 @@ class LocalidadePage extends StatelessWidget {
 
   Widget buildCardBem() {
     return GetBuilder<LocalidadeController>(builder: (_) {
+      if (controller.bens.isEmpty && !controller.loading) {
+        return Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          child: const Text(
+            'Nenhum bem cadastrado',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        );
+      }
+
       return Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: Column(
@@ -95,6 +108,7 @@ class LocalidadePage extends StatelessWidget {
                 : ListView.builder(
                     shrinkWrap: true,
                     itemCount: controller.bens.length,
+                    padding: const EdgeInsets.only(bottom: 60),
                     itemBuilder: (context, index) {
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 5),
@@ -137,9 +151,13 @@ class LocalidadePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: controller.onAdicionarBem,
-        label: const Text('Cadastrar Bem'),
-        icon: const Icon(Icons.add),
+        backgroundColor: controller.localidadeFinalizada ? Colors.grey : null,
+        onPressed:
+            controller.localidadeFinalizada ? null : controller.onAdicionarBem,
+        label: Text(controller.localidadeFinalizada
+            ? 'Localidade Finalizada'
+            : 'Cadastrar Bem'),
+        icon: controller.localidadeFinalizada ? null : const Icon(Icons.add),
       ),
       appBar: AppBar(
         title: Text(controller.localidade.nome),

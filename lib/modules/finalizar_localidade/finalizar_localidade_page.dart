@@ -68,13 +68,11 @@ class FinalizarLocalidadePage extends StatelessWidget {
                     child: Container(
                       /* height: 50,
                       width: 200, */
-                      child: ElevatedButton(
-                        onPressed: controller.salvar,
+                      child: const ElevatedButton(
+                        onPressed: null,
                         child: Text(
-                          controller.salvando
-                              ? 'SALVANDO...'
-                              : 'REABRIR LOCALIDADE',
-                          style: const TextStyle(
+                          'LOCALIDADE FINALIZADA',
+                          style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.w500),
                         ),
                       ),
