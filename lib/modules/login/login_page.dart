@@ -61,25 +61,31 @@ class LoginPage extends StatelessWidget {
                           },
                         ),
                         const SizedBox(height: 16),
-                        TextFormField(
-                          controller: controller.passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            labelText: 'Senha',
-                            prefixIcon: const Icon(Icons.lock),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            suffixIcon: const Icon(Icons.visibility),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Campo obrigatório';
-                            }
-                            if (value.length < 6) {
-                              return 'Senha deve ter no mínimo 6 caracteres';
-                            }
-                            return null;
+                        GetBuilder<LoginController>(
+                          builder: (_) {
+                            return TextFormField(
+                              controller: controller.passwordController,
+                              obscureText: !controller.showPassword,
+                              decoration: InputDecoration(
+                                labelText: 'Senha',
+                                prefixIcon: const Icon(Icons.lock),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                suffixIcon: GestureDetector(
+                                    onTap: controller.toggleShowPassword,
+                                    child: const Icon(Icons.visibility)),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return 'Campo obrigatório';
+                                }
+                                if (value.length < 6) {
+                                  return 'Senha deve ter no mínimo 6 caracteres';
+                                }
+                                return null;
+                              },
+                            );
                           },
                         ),
                         const SizedBox(height: 16),
@@ -109,12 +115,20 @@ class LoginPage extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(height: 16),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: controller.login,
-                            child: const Text('Entrar'),
-                          ),
+                        GetBuilder<LoginController>(
+                          builder: (_) {
+                            return SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: controller.login,
+                                child: controller.loading
+                                    ? const CircularProgressIndicator(
+                                        color: Colors.white,
+                                      )
+                                    : const Text('Entrar'),
+                              ),
+                            );
+                          },
                         ),
                         const SizedBox(height: 16),
                         Row(

@@ -24,6 +24,8 @@ class LocalidadeController extends GetxController {
     getBens();
   }
 
+  bool get localidadeFinalizada => localidade.status == 'finalizada';
+
   getBens() async {
     bens = await bemRepository
         .getBensByLocalidadeInventarioId(localidade.inventarioId);
