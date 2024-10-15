@@ -7,69 +7,71 @@ class LocalidadePage extends StatelessWidget {
   LocalidadePage({super.key});
 
   Widget buildCardInfo() {
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.all(8.0),
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            child: Text(
-              'Nome: ${controller.localidade.nome}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+    return GetBuilder<LocalidadeController>(builder: (_) {
+      return Container(
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                'Nome: ${controller.localidade.nome}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            child: Text(
-              'Número de bens: ${controller.localidade.numeroBens ?? 'Carregando...'}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                'Número de bens: ${controller.localidade.numeroBens ?? 'Carregando...'}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          //status
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 2),
-            child: Text(
-              'Status: ${controller.localidade.statusFormatado}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            //status
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 2),
+              child: Text(
+                'Status: ${controller.localidade.statusFormatado}',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          const Divider(),
+            const Divider(),
 
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              OutlinedButton(
-                onPressed: controller.goToPanoramicas,
-                child: const Text('Fotos Panorâmicas'),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              OutlinedButton(
-                onPressed: controller.goToFinalizarLocalidade,
-                child: const Text('Finalizar Localidade'),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                OutlinedButton(
+                  onPressed: controller.goToPanoramicas,
+                  child: const Text('Fotos Panorâmicas'),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                OutlinedButton(
+                  onPressed: controller.goToFinalizarLocalidade,
+                  child: const Text('Finalizar Localidade'),
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    });
   }
 
   Widget buildCardBem() {
@@ -132,6 +134,7 @@ class LocalidadePage extends StatelessWidget {
                                 ),
                                 Text(
                                   controller.bens[index].descricao,
+                                  maxLines: 3,
                                   style: const TextStyle(
                                     fontSize: 18,
                                   ),

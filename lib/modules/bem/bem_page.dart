@@ -93,6 +93,9 @@ class BemPage extends StatelessWidget {
                     controller.getImage();
                   },
                   child: Container(
+                    alignment: Alignment.center,
+                    height: double.infinity,
+                    width: double.infinity,
                     child: const Text(
                       'Selecionar Foto',
                       style:
@@ -365,7 +368,8 @@ class BemPage extends StatelessWidget {
         actions: [
           if (controller.bem != null)
             IconButton(
-                onPressed: controller.excluirBem, icon: Icon(Icons.delete))
+                onPressed: controller.excluirBem,
+                icon: const Icon(Icons.delete))
         ],
       ),
       body: SingleChildScrollView(

@@ -33,10 +33,17 @@ class LocalidadeController extends GetxController {
     update();
   }
 
+  getLocalidade() async {
+    localidade = await localidadeRepository
+        .buscaDetalhesLocalidade(localidade.localidadeId);
+    update();
+  }
+
   goToBem(Bem bem) async {
     await Get.toNamed(Routes.bem,
         arguments: {'bem': bem, 'localidade': localidade});
     getBens();
+    getLocalidade();
   }
 
   goToPanoramicas() async {
@@ -57,6 +64,7 @@ class LocalidadeController extends GetxController {
   onAdicionarBem() async {
     await Get.toNamed(Routes.bem, arguments: {'localidade': localidade});
     getBens();
+    getLocalidade();
   }
 
   void signOut() {

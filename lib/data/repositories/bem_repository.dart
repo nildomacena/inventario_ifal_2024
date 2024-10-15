@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:inventario_ifal/data/models/bem.dart';
 import 'package:inventario_ifal/data/models/descricao_bem.dart';
@@ -35,6 +36,8 @@ class BemRepository {
     required String observacoes,
     required bool semEtiqueta,
   }) async {
+    String anoInventario = DotEnv().env['ANO_INVENTARIO'] ?? '2024';
+
     String path = patrimonio.isNotEmpty
         ? '$patrimonio/${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}'
         : '${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}';
@@ -50,6 +53,34 @@ class BemRepository {
       UtilService.snackBarErro(mensagem: 'Usuário não encontrado');
       return;
     }
+
+    //check if bem already exists if it does, get name of localidade where it is and throw error
+    final response = await client
+        .from('bens')
+        .select(
+            'patrimonio, inventario_id, localidade_id, numero_serie, descricao')
+        .eq('patrimonio', patrimonio)
+        .eq('inventario_id', inventarioLocalidadeId)
+        .select();
+
+    /* await client
+        .from('bens')
+        .select(
+            'patrimonio, inventario_id, localidade_id, numero_serie, descricao')
+        .eq('patrimonio', patrimonio)
+        .eq('inventario_id', inventarioLocalidadeId)
+        .select();
+
+    if (response.isNotEmpty) {
+      //busca nome da localidade onde o bem já está cadastrado
+      final localidade = await client
+          .from('localidades')
+          .select('nome')
+          .eq('id', response[0]['localidade_id'])
+          .select();
+      throw ('Bem já cadastrado na localidade ${localidade[0]['nome']}');
+    }
+ */
     await client.from('bens').insert({
       'usuario_id': usuario.id,
       'localidade_id': localidadeId,
@@ -63,6 +94,7 @@ class BemRepository {
       'observacoes': observacoes,
       'sem_etiqueta': semEtiqueta,
       'imagem': url,
+      'ano_inventario': anoInventario,
     }).select();
   }
 
