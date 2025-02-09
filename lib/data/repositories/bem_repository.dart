@@ -7,6 +7,7 @@ import 'package:inventario_ifal/data/models/bem.dart';
 import 'package:inventario_ifal/data/models/descricao_bem.dart';
 import 'package:inventario_ifal/data/models/usuario.dart';
 import 'package:inventario_ifal/data/providers/auth_provider.dart';
+import 'package:inventario_ifal/shared/exceptions/bem_ja_cadastrado_exception.dart';
 import 'package:inventario_ifal/shared/utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -36,7 +37,7 @@ class BemRepository {
     required String observacoes,
     required bool semEtiqueta,
   }) async {
-    String anoInventario = DotEnv().env['ANO_INVENTARIO'] ?? '2024';
+    String anoInventario = dotenv.env['ANO_INVENTARIO'] ?? '2024';
 
     String path = patrimonio.isNotEmpty
         ? '$patrimonio/${DateTime.now().microsecondsSinceEpoch}-${UtilService.getFileName(image.path)}'
@@ -57,11 +58,25 @@ class BemRepository {
     //check if bem already exists if it does, get name of localidade where it is and throw error
     final response = await client
         .from('bens')
-        .select(
-            'patrimonio, inventario_id, localidade_id, numero_serie, descricao')
+        .select('''
+      patrimonio,
+      inventario_id,
+      localidade_id,
+      numero_serie,
+      descricao,
+      localidades (
+        nome
+      )
+    ''')
         .eq('patrimonio', patrimonio)
         .eq('inventario_id', inventarioLocalidadeId)
-        .select();
+        .eq('ano_inventario', anoInventario);
+
+    print('response: $response');
+    if (response.isNotEmpty) {
+      throw BemJaCadastradoException(
+          'Bem já cadastrado na localidade ${response[0]['localidades']['nome']}');
+    }
 
     /* await client
         .from('bens')
@@ -71,15 +86,7 @@ class BemRepository {
         .eq('inventario_id', inventarioLocalidadeId)
         .select();
 
-    if (response.isNotEmpty) {
-      //busca nome da localidade onde o bem já está cadastrado
-      final localidade = await client
-          .from('localidades')
-          .select('nome')
-          .eq('id', response[0]['localidade_id'])
-          .select();
-      throw ('Bem já cadastrado na localidade ${localidade[0]['nome']}');
-    }
+   
  */
     await client.from('bens').insert({
       'usuario_id': usuario.id,
@@ -166,6 +173,24 @@ class BemRepository {
     await client.from('bens').delete().eq('id', id).single();
   }
 
+  Future<bool> checkIfBemExists(String patrimonio) async {
+    String anoInventario = dotenv.env['ANO_INVENTARIO'] ?? '2024';
+    final response = await client.from('bens').select('''
+      patrimonio,
+      inventario_id,
+      localidade_id,
+      numero_serie,
+      descricao,
+      localidades (
+        nome
+      )
+    ''').eq('patrimonio', patrimonio).eq('ano_inventario', anoInventario);
+    if (response.isEmpty) return false;
+
+    throw BemJaCadastradoException(
+        'Bem já cadastrado na localidade ${response[0]['localidades']['nome']}');
+  }
+
   Future<DescricaoBem?> getDescricaoBem(String numTombamento) async {
     print('getDescricaoBem');
     String apiToken =
@@ -185,7 +210,8 @@ class BemRepository {
 
     if (response.statusCode != null &&
         response.statusCode! >= 200 &&
-        response.statusCode! < 300) {
+        response.statusCode! < 300 &&
+        response.data.length > 0) {
       return DescricaoBem.fromJson(response.data[0]);
     }
     return null;

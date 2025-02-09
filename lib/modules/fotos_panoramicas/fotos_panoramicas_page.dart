@@ -57,9 +57,15 @@ class PanoramicasPage extends StatelessWidget {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
-                                Image.network(
-                                  controller.panoramicas[index].url,
-                                  fit: BoxFit.cover,
+                                InkWell(
+                                  onTap: () {
+                                    Get.dialog(ViewImage(
+                                        controller.panoramicas[index].url));
+                                  },
+                                  child: Image.network(
+                                    controller.panoramicas[index].url,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                                 Positioned(
                                     top: 2,
@@ -107,9 +113,15 @@ class PanoramicasPage extends StatelessWidget {
                             child: Stack(
                               fit: StackFit.expand,
                               children: [
-                                Image.file(
-                                  controller.imagens[index],
-                                  fit: BoxFit.cover,
+                                InkWell(
+                                  onTap: () {
+                                    Get.dialog(
+                                        ViewImage(controller.imagens[index]));
+                                  },
+                                  child: Image.file(
+                                    controller.imagens[index],
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                                 Positioned(
                                     top: 2,

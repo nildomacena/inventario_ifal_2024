@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -52,8 +53,7 @@ class FinalizarLocalidadeController extends GetxController {
         usuarioId: usuario.id,
       );
 
-      // Get.back();
-
+      Get.back();
       Get.snackbar('Sucesso', 'Relatório salvo com sucesso');
     } catch (e) {
       Get.snackbar('Erro', 'Erro ao salvar relatório');
@@ -65,7 +65,7 @@ class FinalizarLocalidadeController extends GetxController {
 
   @override
   void onInit() {
-    textEditingController.text = 'teste teste teste';
+    if (kDebugMode) textEditingController.text = 'teste teste teste';
     localidade = Get.arguments['localidade'] as Localidade;
     super.onInit();
   }

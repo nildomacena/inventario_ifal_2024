@@ -23,8 +23,12 @@ class AuthProvider {
   }
 
   listenAuthState() {
-    supabase.auth.onAuthStateChange.listen((event) {
+    supabase.auth.onAuthStateChange.listen((event) async {
+      print('event: $event');
       if (event.session?.user != null) {
+        if (event.event == AuthChangeEvent.initialSession) {
+          await Future.delayed(const Duration(seconds: 1));
+        }
         getUsuario(event.session!.user.id).then((value) {
           usuario = value;
         });
@@ -73,7 +77,7 @@ class AuthProvider {
         'cpf': cpf,
         'siape': siape,
         'email': email,
-      }).single();
+      }).select();
 
       listenAuthState();
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttericon/font_awesome_icons.dart';
 import 'package:get/get.dart';
 import 'package:inventario_ifal/modules/bem/bem_controller.dart';
+import 'package:inventario_ifal/modules/fotos_panoramicas/widgets/view_image.dart';
 
 class BemPage extends StatelessWidget {
   final BemController controller = Get.find();
@@ -42,7 +43,9 @@ class BemPage extends StatelessWidget {
                       right: Get.width / 2 + 20,
                       child: IconButton(
                         icon: const Icon(Icons.remove_red_eye),
-                        onPressed: () {},
+                        onPressed: () {
+                          Get.to(ViewImage(image));
+                        },
                       )),
                 ],
               ),
@@ -126,7 +129,7 @@ class BemPage extends StatelessWidget {
                   focusNode: controller.patrimonioFocus,
                   textInputAction: TextInputAction.next,
                   onFieldSubmitted: controller.onPatrimonioSubmit,
-                  onEditingComplete: controller.onPatrimonioComplete,
+                  // onEditingComplete: controller.onPatrimonioComplete,
                   validator: controller.validatorPatrimonio,
                   decoration: InputDecoration(
                       contentPadding:

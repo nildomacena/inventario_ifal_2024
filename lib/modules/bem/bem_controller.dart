@@ -6,6 +6,7 @@ import 'package:inventario_ifal/data/models/bem.dart';
 import 'package:inventario_ifal/data/models/descricao_bem.dart';
 import 'package:inventario_ifal/data/models/localidade.dart';
 import 'package:inventario_ifal/data/repositories/bem_repository.dart';
+import 'package:inventario_ifal/shared/exceptions/bem_ja_cadastrado_exception.dart';
 import 'package:inventario_ifal/shared/utils.dart';
 
 class BemController extends GetxController {
@@ -72,7 +73,13 @@ class BemController extends GetxController {
   onPatrimonioComplete() async {
     print('onPatrimonioComplete');
 
+    if (patrimonioController.text.isEmpty) {
+      UtilService.snackBarErro(mensagem: 'Digite o patrimônio do bem');
+      return;
+    }
+
     try {
+      await repository.checkIfBemExists(patrimonioController.text);
       DescricaoBem? descricaoBem =
           await repository.getDescricaoBem(patrimonioController.text);
       if (descricaoBem == null) {
@@ -91,7 +98,19 @@ class BemController extends GetxController {
         return;
       }
       descricaoController.text = descricaoBem.especificacao;
-      print('descricaoBem: $descricaoBem');
+    } on BemJaCadastradoException catch (e) {
+      Get.dialog(AlertDialog(
+        title: Text(e.message),
+        content: Text(e.message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('OK'),
+          )
+        ],
+      ));
     } catch (e) {
       print('Erro ao buscar descrição do bem: $e');
       Get.dialog(AlertDialog(
@@ -107,25 +126,6 @@ class BemController extends GetxController {
         ],
       ));
     }
-    /*  descricaoController.text =
-        utilService.getDescricaoPorTombamento(patrimonioController.text); */
-    /* Localidade localidade = await fireService
-                      .verificaBemJaCadastrado(patrimonioController.text);
-                  if (localidade != null) {
-                    Get.dialog(AlertDialog(
-                      title: const Text('Bem Já inventariado'),
-                      content: Text(
-                          'O bem ${descricaoController.text ?? ''} já foi inventariado na localidade ${localidade.nome}'),
-                      actions: [
-                        FlatButton(
-                          child: const Text('OK'),
-                          onPressed: () {
-                            Get.back();
-                          },
-                        )
-                      ],
-                    ));
-                  } */
   }
 
   String? validatorPatrimonio(String? patrimonio) {
@@ -196,7 +196,7 @@ class BemController extends GetxController {
 
   scanQrCode() async {
     if (kDebugMode) {
-      patrimonioController.text = '152025';
+      patrimonioController.text = '152023';
       onPatrimonioComplete();
       return;
     }
@@ -247,6 +247,19 @@ class BemController extends GetxController {
           titulo: 'Sucesso!',
           mensagem: 'Cadastro de bem realizado com sucesso');
       resetForm();
+    } on BemJaCadastradoException catch (e) {
+      Get.dialog(AlertDialog(
+        title: Text(e.message),
+        content: Text(e.message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text('OK'),
+          )
+        ],
+      ));
     } catch (e) {
       print('Erro ao salvar bem: $e');
       UtilService.snackBarErro(

@@ -54,6 +54,7 @@ class LocalidadeController extends GetxController {
   goToFinalizarLocalidade() async {
     await Get.toNamed(Routes.finalizarLocalidade,
         arguments: {'localidade': localidade});
+    getLocalidade();
   }
 
   buscaDetalhesLocalidade() async {

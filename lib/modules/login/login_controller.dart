@@ -91,6 +91,20 @@ class LoginController extends GetxController {
           siape: siape,
         );
         Get.offAllNamed(Routes.home);
+        Get.dialog(
+          AlertDialog(
+            title: const Text('Sucesso'),
+            content: const Text('Usuário criado com sucesso'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.back();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
       } catch (e) {
         Get.snackbar('Erro', e.toString());
       } finally {

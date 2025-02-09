@@ -109,6 +109,7 @@ class LocalidadePage extends StatelessWidget {
                   )
                 : ListView.builder(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: controller.bens.length,
                     padding: const EdgeInsets.only(bottom: 60),
                     itemBuilder: (context, index) {
@@ -153,15 +154,18 @@ class LocalidadePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        backgroundColor: controller.localidadeFinalizada ? Colors.grey : null,
-        onPressed:
-            controller.localidadeFinalizada ? null : controller.onAdicionarBem,
-        label: Text(controller.localidadeFinalizada
-            ? 'Localidade Finalizada'
-            : 'Cadastrar Bem'),
-        icon: controller.localidadeFinalizada ? null : const Icon(Icons.add),
-      ),
+      floatingActionButton: GetBuilder<LocalidadeController>(builder: (_) {
+        return FloatingActionButton.extended(
+          backgroundColor: controller.localidadeFinalizada ? Colors.grey : null,
+          onPressed: controller.localidadeFinalizada
+              ? null
+              : controller.onAdicionarBem,
+          label: Text(controller.localidadeFinalizada
+              ? 'Localidade Finalizada'
+              : 'Cadastrar Bem'),
+          icon: controller.localidadeFinalizada ? null : const Icon(Icons.add),
+        );
+      }),
       appBar: AppBar(
         title: Text(controller.localidade.nome),
         actions: <Widget>[
